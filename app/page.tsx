@@ -7,8 +7,15 @@ export default function Home() {
 
   useEffect(() => {
     const testConnection = async () => {
-      const { data, error } = await supabase.from('test').select('*')
-      console.log(data, error)
+      const { data, error } = await supabase
+        .from('configuracion_anualidades')
+        .select('*')
+
+      if (error) {
+        console.error('Error:', error)
+      } else {
+        console.log('Datos:', data)
+      }
     }
 
     testConnection()
