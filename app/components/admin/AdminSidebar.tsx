@@ -2,18 +2,19 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Map, Users, CreditCard, TrendingUp, Settings, TreePine, Images } from 'lucide-react'
-import { ShieldCheck } from 'lucide-react'
+import { LayoutDashboard, Map, Users, CreditCard, TrendingUp, Settings, Images, ShieldCheck, ClipboardList, UserCog } from 'lucide-react'
 
 const navItems = [
-  { href: '/admin/dashboard',     label: 'Dashboard',     icon: LayoutDashboard },
-  { href: '/admin/lotes',         label: 'Lotes',         icon: Map },
-  { href: '/admin/difuntos',      label: 'Difuntos',      icon: Users },
-  { href: '/admin/pagos',         label: 'Anualidades',   icon: CreditCard },
-  { href: '/admin/ingresos',      label: 'Ingresos',      icon: TrendingUp },
-  { href: '/admin/configuracion', label: 'Configuración', icon: Settings },
-  { href: '/admin/galeria', label: 'Galería', icon: Images },
-  { href: '/admin/estado-pagos', label: 'Estado de Pagos', icon: ShieldCheck },
+  { href: '/admin/dashboard',     label: 'Dashboard',       icon: LayoutDashboard },
+  { href: '/admin/lotes',         label: 'Lotes',           icon: Map },
+  { href: '/admin/difuntos',      label: 'Difuntos',        icon: Users },
+  { href: '/admin/pagos',         label: 'Anualidades',     icon: CreditCard },
+  { href: '/admin/estado-pagos',  label: 'Estado de Pagos', icon: ShieldCheck },
+  { href: '/admin/ingresos',      label: 'Ingresos',        icon: TrendingUp },
+  { href: '/admin/galeria',       label: 'Galería',         icon: Images },
+  { href: '/admin/usuarios',      label: 'Usuarios',        icon: UserCog },
+  { href: '/admin/configuracion', label: 'Configuración',   icon: Settings },
+  { href: '/admin/auditoria',     label: 'Auditoría',       icon: ClipboardList },
 ]
 
 export default function AdminSidebar() {
@@ -23,8 +24,8 @@ export default function AdminSidebar() {
     <aside className="w-64 bg-stone-900 text-stone-100 flex flex-col shrink-0">
       <div className="p-5 border-b border-stone-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-emerald-600 rounded-lg flex items-center justify-center">
-            <TreePine className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center bg-white">
+            <img src="/Logo.jpeg" alt="Logo ADI" className="w-full h-full object-contain" />
           </div>
           <div>
             <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Panel Admin</p>

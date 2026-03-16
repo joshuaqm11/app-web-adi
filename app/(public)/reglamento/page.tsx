@@ -10,7 +10,7 @@ export default function Reglamento() {
           <div className="flex items-center gap-3 mb-2">
             <FileText className="w-8 h-8 text-blue-600" />
             <h1 className="text-3xl font-bold text-gray-800">
-              Reglamento Interno
+              Reglamento Interno Cementerio
             </h1>
           </div>
 
@@ -113,7 +113,7 @@ export default function Reglamento() {
               <p>
                 <strong>Fecha de pago:</strong> Las anualidades deben pagarse
                 durante el año en cobro, es decir, se tienen los 12 meses del año para
-                cancelar la aunualidad.
+                cancelar la anualidad.
               </p>
             </div>
 

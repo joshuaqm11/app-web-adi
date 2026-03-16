@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/AuthContext'
-import { TreePine, Mail, Lock, AlertCircle } from 'lucide-react'
+import { Mail, Lock, AlertCircle } from 'lucide-react'
+import Image from 'next/image'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -34,9 +35,10 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-stone-900 via-stone-800 to-emerald-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+
           <div className="bg-emerald-700 p-8 text-center">
-            <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <TreePine className="w-8 h-8 text-white" />
+            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden">
+              <Image src="/Logo.jpeg" alt="Logo ADI" width={80} height={80} className="object-contain" />
             </div>
             <h1 className="text-white text-xl font-bold">Asociación ADISJ</h1>
             <p className="text-emerald-200 text-sm mt-1">San Juan de Florencia, San Carlos</p>
@@ -78,6 +80,7 @@ export default function LoginPage() {
               </button>
             </form>
           </div>
+
         </div>
       </div>
     </div>
