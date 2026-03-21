@@ -3,6 +3,8 @@ export type TipoSepultura = 'boveda' | 'lapida' | 'tierra'
 export type MetodoPago = 'efectivo' | 'transferencia' | 'sinpe' | 'otro'
 export type TipoIngreso = 'salon' | 'feria' | 'actividad' | 'donacion' | 'otro'
 export type LadoCementerio = 'izquierdo' | 'derecho'
+// 1. Nuevo tipo para estado de ocupación física
+export type EstadoOcupacion = 'sin_difunto' | 'parcial' | 'ocupado'
 
 export interface Lote {
   id: string
@@ -14,6 +16,8 @@ export interface Lote {
   fecha_registro: string
   observaciones?: string | null
   lado?: LadoCementerio | null
+  // 2. Nuevo campo en Lote
+  capacidad_nichos?: number
   difuntos?: Difunto[]
 }
 
@@ -25,6 +29,8 @@ export interface LoteFormData {
   tipo_sepultura: TipoSepultura
   observaciones?: string
   lado?: LadoCementerio
+  // 2. Nuevo campo en LoteFormData
+  capacidad_nichos?: number
 }
 
 export interface Difunto {
@@ -35,6 +41,8 @@ export interface Difunto {
   fecha_entierro?: string | null
   observaciones?: string | null
   fecha_registro: string
+  // 3. Nuevo campo en Difunto
+  numero_nicho?: number | null
   lotes?: Lote | null
 }
 
@@ -44,6 +52,8 @@ export interface DifuntoFormData {
   lote_id?: string
   fecha_entierro?: string
   observaciones?: string
+  // 3. Nuevo campo en DifuntoFormData
+  numero_nicho?: number
 }
 
 export interface PagoAnualidad {
@@ -57,6 +67,9 @@ export interface PagoAnualidad {
   tipo_sepultura: TipoSepultura
   observaciones?: string | null
   fecha_registro: string
+  // 4. Nuevos campos en PagoAnualidad
+  lote_id?: string | null
+  anio?: number | null
 }
 
 export interface PagoFormData {
@@ -68,6 +81,9 @@ export interface PagoFormData {
   metodo_pago: MetodoPago
   tipo_sepultura: TipoSepultura
   observaciones?: string
+  // 4. Nuevos campos en PagoFormData
+  lote_id?: string
+  anio?: number
 }
 
 export interface ConfiguracionAnualidades {
@@ -158,4 +174,7 @@ export interface LoteConEstadoPago extends Lote {
   nombre_difunto: string | null
   difunto_id: string | null
   estado_pago: EstadoPago
+  // 1. Nuevos campos de la vista actualizada
+  total_difuntos?: number
+  estado_ocupacion?: EstadoOcupacion
 }
