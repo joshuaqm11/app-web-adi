@@ -168,7 +168,7 @@ export default function AuditoriaPage() {
                 return (
                   <tr key={r.id} className="border-b border-stone-100 hover:bg-stone-50 transition-colors">
                     <td className="px-4 py-3 text-stone-500 whitespace-nowrap">
-                      {new Date(r.fecha).toLocaleString('es-CR')}
+                      {new Date(r.fecha).toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' })}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>
@@ -213,7 +213,7 @@ export default function AuditoriaPage() {
                 <p className="text-sm text-stone-500 mt-0.5">
                   {TABLA_LABEL[selected.tabla_afectada] ?? selected.tabla_afectada} —{' '}
                   {ACCION_CONFIG[selected.accion]?.label ?? selected.accion} —{' '}
-                  {new Date(selected.fecha).toLocaleString('es-CR')}
+                  {new Date(selected.fecha).toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' })}
                 </p>
               </div>
               <button onClick={() => setSelected(null)}>

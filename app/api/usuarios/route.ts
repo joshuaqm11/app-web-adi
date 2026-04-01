@@ -16,15 +16,29 @@ export async function GET() {
 
 // POST — crear usuario
 export async function POST(req: NextRequest) {
-  const { email, password, nombre } = await req.json()
+  const { email, password, nombre, rol } = await req.json()
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
-    user_metadata: { nombre }
+    user_metadata: { nombre, rol }
   })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data.user)
+}
+
+// PATCH — cambiar contraseña de un usuario (solo admin)
+export async function PATCH(req: NextRequest) {
+  const { id, password } = await req.json()
+  if (!id || !password) {
+    return NextResponse.json({ error: 'id y password son requeridos.' }, { status: 400 })
+  }
+  if (password.length < 6) {
+    return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres.' }, { status: 400 })
+  }
+  const { error } = await supabaseAdmin.auth.admin.updateUserById(id, { password })
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
 }
 
 // DELETE — eliminar usuario

@@ -24,7 +24,11 @@ function StatCard({ title, value, icon: Icon, color, subtitle }: {
 }
 
 function formatCRC(value: number) {
-  return new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC', minimumFractionDigits: 0 }).format(value)
+  return new Intl.NumberFormat('es-CR', {
+    style: 'currency',
+    currency: 'CRC',
+    minimumFractionDigits: 0
+  }).format(value)
 }
 
 interface EstadoPagosStats {
@@ -75,13 +79,23 @@ export default function DashboardPage() {
       const ingresosAnioAct = ingresos?.filter(i => i.fecha_ingreso >= primerDiaAnio).reduce((sum, i) => sum + Number(i.monto), 0) ?? 0
       const ingresosAnio = pagosAnio + ingresosAnioAct
 
-      setStats({ totalLotes, lotesDisponibles, lotesOcupados, lotesReservados,
-        totalPagosAnualidades, ingresosCementerio, ingresosActividades, totalIngresos, ingresosMes, ingresosAnio })
+      setStats({
+        totalLotes,
+        lotesDisponibles,
+        lotesOcupados,
+        lotesReservados,
+        totalPagosAnualidades,
+        ingresosCementerio,
+        ingresosActividades,
+        totalIngresos,
+        ingresosMes,
+        ingresosAnio
+      })
 
       setEstadoPagos({
-        al_dia:    estadoPagosData?.filter(l => l.estado_pago === 'al_dia').length ?? 0,
+        al_dia: estadoPagosData?.filter(l => l.estado_pago === 'al_dia').length ?? 0,
         pendiente: estadoPagosData?.filter(l => l.estado_pago === 'pendiente').length ?? 0,
-        moroso:    estadoPagosData?.filter(l => l.estado_pago === 'moroso').length ?? 0,
+        moroso: estadoPagosData?.filter(l => l.estado_pago === 'moroso').length ?? 0,
       })
 
       setLoading(false)
@@ -91,7 +105,13 @@ export default function DashboardPage() {
 
   function handleExportResumen() {
     if (!stats) return
-    const mesActual = new Date().toLocaleString('es-CR', { month: 'long', year: 'numeric' })
+
+    const mesActual = new Date().toLocaleString('es-CR', {
+      timeZone: 'America/Costa_Rica',
+      month: 'long',
+      year: 'numeric'
+    })
+
     const anioActual = String(new Date().getFullYear())
 
     const data = [
@@ -110,7 +130,13 @@ export default function DashboardPage() {
       { 'Categoría': 'PERÍODO', 'Concepto': `Ingresos del Año (${anioActual})`, 'Valor': formatMonto(stats.ingresosAnio) },
     ]
 
-    exportToExcel(data, `Resumen_Financiero_${new Date().toLocaleDateString('es-CR').replace(/\//g, '-')}`, 'Resumen')
+    exportToExcel(
+      data,
+      `Resumen_Financiero_${new Date().toLocaleDateString('es-CR', {
+        timeZone: 'America/Costa_Rica'
+      }).replace(/\//g, '-')}`,
+      'Resumen'
+    )
   }
 
   if (loading) return (
@@ -159,37 +185,18 @@ export default function DashboardPage() {
         <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-3 flex items-center gap-2">
           <ShieldCheck className="w-4 h-4" /> Estado de Pagos — {new Date().getFullYear()}
         </h2>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
           <StatCard title="Al día" value={estadoPagos.al_dia} icon={ShieldCheck} color="bg-emerald-500" subtitle="Pagaron este año" />
           <StatCard title="Pendientes" value={estadoPagos.pendiente} icon={Clock} color="bg-amber-500" subtitle="Sin pago aún" />
           <StatCard title="Morosos" value={estadoPagos.moroso} icon={AlertTriangle} color="bg-red-500" subtitle="Año anterior sin pagar" />
         </div>
 
-        {/* Barra de progreso */}
         {totalOcupados > 0 && (
           <div className="bg-white rounded-xl border border-stone-200 p-5">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-medium text-stone-700">Cobranza {new Date().getFullYear()}</p>
               <p className="text-sm font-bold text-emerald-700">{porcentajeAlDia}% al día</p>
-            </div>
-            <div className="w-full h-3 bg-stone-100 rounded-full overflow-hidden flex">
-              <div
-                className="h-full bg-emerald-500 transition-all duration-500"
-                style={{ width: `${Math.round((estadoPagos.al_dia / totalOcupados) * 100)}%` }}
-              />
-              <div
-                className="h-full bg-red-400 transition-all duration-500"
-                style={{ width: `${Math.round((estadoPagos.moroso / totalOcupados) * 100)}%` }}
-              />
-              <div
-                className="h-full bg-amber-400 transition-all duration-500"
-                style={{ width: `${Math.round((estadoPagos.pendiente / totalOcupados) * 100)}%` }}
-              />
-            </div>
-            <div className="flex items-center gap-4 mt-2 text-xs text-stone-500">
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" /> Al día ({estadoPagos.al_dia})</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-red-400 inline-block" /> Morosos ({estadoPagos.moroso})</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" /> Pendientes ({estadoPagos.pendiente})</span>
             </div>
           </div>
         )}
@@ -200,14 +207,20 @@ export default function DashboardPage() {
         <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-3 flex items-center gap-2">
           <TrendingUp className="w-4 h-4" /> Resumen Financiero
         </h2>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <StatCard title="Pagos de Anualidades" value={stats?.totalPagosAnualidades ?? 0} icon={CreditCard} color="bg-blue-500" subtitle="Registros totales" />
-          <StatCard title="Ingresos Cementerio" value={formatCRC(stats?.ingresosCementerio ?? 0)} icon={DollarSign} color="bg-teal-500" subtitle="Anualidades acumuladas" />
-          <StatCard title="Ingresos Actividades" value={formatCRC(stats?.ingresosActividades ?? 0)} icon={Users} color="bg-violet-500" subtitle="Salón, ferias y más" />
-          <StatCard title="Total General" value={formatCRC(stats?.totalIngresos ?? 0)} icon={TrendingUp} color="bg-emerald-600" subtitle="Cementerio + actividades" />
-          <StatCard title="Ingresos del Mes" value={formatCRC(stats?.ingresosMes ?? 0)} icon={Calendar} color="bg-orange-500"
-            subtitle={new Date().toLocaleString('es-CR', { month: 'long', year: 'numeric' })} />
-          <StatCard title="Ingresos del Año" value={formatCRC(stats?.ingresosAnio ?? 0)} icon={CalendarRange} color="bg-cyan-600" subtitle={String(new Date().getFullYear())} />
+          <StatCard title="Pagos de Anualidades" value={stats?.totalPagosAnualidades ?? 0} icon={CreditCard} color="bg-blue-500" />
+          <StatCard title="Ingresos Cementerio" value={formatCRC(stats?.ingresosCementerio ?? 0)} icon={DollarSign} color="bg-teal-500" />
+          <StatCard title="Ingresos del Mes"
+            value={formatCRC(stats?.ingresosMes ?? 0)}
+            icon={Calendar}
+            color="bg-orange-500"
+            subtitle={new Date().toLocaleString('es-CR', {
+              timeZone: 'America/Costa_Rica',
+              month: 'long',
+              year: 'numeric'
+            })}
+          />
         </div>
       </section>
     </div>
