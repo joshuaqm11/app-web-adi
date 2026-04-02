@@ -9,29 +9,42 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
+  rol: string | null
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+async function fetchRol(userId: string): Promise<string | null> {
+  const { data } = await supabase
+    .from('perfil_usuario')
+    .select('rol')
+    .eq('id', userId)
+    .single()
+  return data?.rol ?? null
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [rol, setRol] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
+      setRol(session?.user ? await fetchRol(session.user.id) : null)
       setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (_event, session) => {
         setSession(session)
         setUser(session?.user ?? null)
+        setRol(session?.user ? await fetchRol(session.user.id) : null)
         setLoading(false)
       }
     )
@@ -47,11 +60,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut()
+    setRol(null)
     router.push('/admin/login')
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, rol, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )

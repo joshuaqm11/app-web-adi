@@ -113,7 +113,9 @@ function ModalCambiarPassword({ titulo, onClose, onGuardar, saving, error, pedir
 }
 
 export default function UsuariosPage() {
-  const { user } = useAuth()
+  const { user, rol } = useAuth()
+  const isAdmin = rol === 'ADMIN'
+
   const [usuarios, setUsuarios] = useState<UsuarioAuth[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -202,14 +204,18 @@ export default function UsuariosPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {/* Todos pueden cambiar su propia contraseña */}
           <button onClick={() => { setErrorPass(''); setModalPass('propia') }}
             className="flex items-center gap-2 px-4 py-2 border border-stone-300 hover:border-emerald-500 hover:bg-emerald-50 text-stone-600 hover:text-emerald-700 text-sm font-semibold rounded-lg transition-colors">
             <ShieldCheck className="w-4 h-4" /> Mi contraseña
           </button>
-          <button onClick={() => { setShowModal(true); setError('') }}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
-            <Plus className="w-4 h-4" /> Agregar usuario
-          </button>
+          {/* Solo ADMIN puede agregar usuarios */}
+          {isAdmin && (
+            <button onClick={() => { setShowModal(true); setError('') }}
+              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+              <Plus className="w-4 h-4" /> Agregar usuario
+            </button>
+          )}
         </div>
       </div>
 
@@ -266,16 +272,22 @@ export default function UsuariosPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => { setErrorPass(''); setModalPass({ id: u.id, email: u.email }) }}
-                        className="p-1.5 text-stone-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg"
-                        title="Cambiar contraseña">
-                        <KeyRound className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDelete(u.id, u.email ?? '')}
-                        className="p-1.5 text-stone-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
-                        title="Eliminar usuario">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {/* Solo ADMIN puede cambiar contraseña de otros */}
+                      {isAdmin && (
+                        <button onClick={() => { setErrorPass(''); setModalPass({ id: u.id, email: u.email }) }}
+                          className="p-1.5 text-stone-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg"
+                          title="Cambiar contraseña">
+                          <KeyRound className="w-4 h-4" />
+                        </button>
+                      )}
+                      {/* Solo ADMIN puede eliminar */}
+                      {isAdmin && (
+                        <button onClick={() => handleDelete(u.id, u.email ?? '')}
+                          className="p-1.5 text-stone-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                          title="Eliminar usuario">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -285,7 +297,7 @@ export default function UsuariosPage() {
         </div>
       )}
 
-      {showModal && (
+      {isAdmin && showModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
             <div className="flex items-center justify-between p-6 border-b border-stone-200">

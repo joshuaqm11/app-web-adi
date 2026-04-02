@@ -46,15 +46,20 @@ export default function ConfiguracionPage() {
 
   useEffect(() => { fetchAll() }, [])
 
-  async function saveTarifas() {
-    setSaving(true); setMessage(null)
-    const result = tarifas
-      ? await supabase.from('configuracion_anualidades').update({ ...formTarifas, actualizado_en: new Date().toISOString() }).eq('id', tarifas.id)
-      : await supabase.from('configuracion_anualidades').insert(formTarifas)
-    setMessage(result.error ? { type: 'error', text: result.error.message } : { type: 'success', text: 'Tarifas actualizadas.' })
-    if (!result.error) fetchAll()
-    setSaving(false)
-  }
+ async function saveTarifas() {
+  setSaving(true); setMessage(null)
+  const result = tarifas
+    ? await supabase.from('configuracion_anualidades')
+        .update({ ...formTarifas, actualizado_en: new Date().toISOString() })
+        .eq('id', tarifas.id)
+    : await supabase.from('configuracion_anualidades')
+        .insert({ ...formTarifas })
+  setMessage(result.error
+    ? { type: 'error', text: result.error.message }
+    : { type: 'success', text: 'Tarifas actualizadas.' })
+  if (!result.error) fetchAll()
+  setSaving(false)
+}
 
   async function saveSitio() {
     setSaving(true); setMessage(null)
@@ -157,8 +162,8 @@ export default function ConfiguracionPage() {
                 <p className="flex-1 font-medium text-stone-800">{label}</p>
                 <div className="relative w-44">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">₡</span>
-                  <input type="number" min={0} value={(formTarifas as any)[key]}
-                    onChange={e => setFormTarifas(f => ({ ...f, [key]: +e.target.value }))}
+                  <input type="number" min={0} value={(formTarifas as any)[key] || ''}
+onChange={e => setFormTarifas(f => ({ ...f, [key]: e.target.value === '' ? 0 : +e.target.value }))}
                     className="w-full pl-7 pr-3 py-2.5 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
                 </div>
               </div>
